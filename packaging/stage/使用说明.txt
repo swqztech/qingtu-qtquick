@@ -1,0 +1,4 @@
+轻图（Qt Quick 版）— 绿色版
+
+请双击本文件夹内的「启动.bat」或 qingtu-qtquick.exe 运行。
+不要单独复制 exe 到其他目录，需保留同目录全部 DLL。

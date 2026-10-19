@@ -10,4 +10,10 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```
 
-运行：`build\Release\qingtu-qtquick.exe`
+**不要直接双击 `build\Release` 里的 exe**（会提示缺少 `Qt6Qml.dll` 等）。请打包：
+
+```powershell
+bash packaging/build.sh
+```
+
+绿色版：`dist\轻图-qtquick-0.1.0-win64-绿色版\qingtu-qtquick.exe`
