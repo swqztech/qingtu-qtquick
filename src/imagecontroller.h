@@ -39,8 +39,6 @@ class ImageController : public QObject {
   void setCustomOut(bool v);
   void setOutDir(const QString& v);
 
-  Q_INVOKABLE void pickFiles();
-  Q_INVOKABLE void pickOutDir();
   Q_INVOKABLE void addPaths(const QStringList& paths);
   Q_INVOKABLE void clearFiles();
   Q_INVOKABLE void run();

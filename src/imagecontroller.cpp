@@ -2,8 +2,8 @@
 
 #include <QtConcurrent/QtConcurrent>
 
-#include <QFileDialog>
 #include <QFutureWatcher>
+#include <QUrl>
 
 #include <algorithm>
 
@@ -46,8 +46,11 @@ void ImageController::setCustomOut(bool v) {
 }
 
 void ImageController::setOutDir(const QString& v) {
-  if (out_dir_ == v) return;
-  out_dir_ = v;
+  QString path = v;
+  const QUrl u(v);
+  if (u.isValid() && u.scheme() == QLatin1String("file")) path = u.toLocalFile();
+  if (out_dir_ == path) return;
+  out_dir_ = path;
   emit outDirChanged();
 }
 
@@ -62,26 +65,15 @@ static bool is_image_path(const std::filesystem::path& path) {
 
 void ImageController::addPaths(const QStringList& paths) {
   for (const auto& p : paths) {
-    const auto path = std::filesystem::path(p.toStdWString());
+    QString local = p;
+    const QUrl u(p);
+    if (u.isValid() && u.scheme() == QLatin1String("file")) local = u.toLocalFile();
+    const auto path = std::filesystem::path(local.toStdWString());
     if (!is_image_path(path)) continue;
     if (std::find(files_.begin(), files_.end(), path) != files_.end()) continue;
     files_.push_back(path);
   }
   emit filesChanged();
-}
-
-void ImageController::pickFiles() {
-  const auto paths = QFileDialog::getOpenFileNames(
-      nullptr, QStringLiteral("选择图片"), {},
-      QStringLiteral("图片 (*.png *.jpg *.jpeg *.webp *.gif *.bmp);;所有文件 (*.*)"));
-  addPaths(paths);
-}
-
-void ImageController::pickOutDir() {
-  const QString dir = QFileDialog::getExistingDirectory(nullptr, QStringLiteral("输出目录"));
-  if (dir.isEmpty()) return;
-  setOutDir(dir);
-  setCustomOut(true);
 }
 
 void ImageController::clearFiles() {

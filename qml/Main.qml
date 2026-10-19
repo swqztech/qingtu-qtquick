@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 ApplicationWindow {
     id: root
@@ -76,7 +77,7 @@ ApplicationWindow {
                     Button {
                         text: "选择图片"
                         highlighted: true
-                        onClicked: Qingtu.pickFiles()
+                        onClicked: imageDialog.open()
                     }
                 }
             }
@@ -136,7 +137,7 @@ ApplicationWindow {
                     text: Qingtu.outDir
                     onTextEdited: Qingtu.outDir = text
                 }
-                Button { text: "浏览…"; onClicked: Qingtu.pickOutDir() }
+                Button { text: "浏览…"; onClicked: folderDialog.open() }
             }
 
             RowLayout {
@@ -163,6 +164,28 @@ ApplicationWindow {
                 font.family: "Consolas"
                 wrapMode: TextArea.Wrap
             }
+        }
+    }
+
+    FileDialog {
+        id: imageDialog
+        title: "选择图片"
+        fileMode: FileDialog.OpenFiles
+        nameFilters: ["图片 (*.png *.jpg *.jpeg *.webp *.gif *.bmp)", "所有文件 (*)"]
+        onAccepted: {
+            const paths = []
+            for (let i = 0; i < selectedFiles.length; ++i)
+                paths.push(selectedFiles[i])
+            Qingtu.addPaths(paths)
+        }
+    }
+
+    FolderDialog {
+        id: folderDialog
+        title: "输出目录"
+        onAccepted: {
+            Qingtu.outDir = selectedFolder
+            Qingtu.customOut = true
         }
     }
 }
